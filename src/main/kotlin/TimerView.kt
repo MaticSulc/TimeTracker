@@ -50,14 +50,14 @@ fun TimerDisplay(formatted: String, lastEvent: String, isClockedIn: Boolean, onS
                 onClick = onStartClick,
                 enabled = !isClockedIn
             ){
-                Text("Clock in")
+                Text("Arrival")
             }
             Spacer(Modifier.width(16.dp))
             Button(
                 onClick = onEndClick,
                 enabled = isClockedIn
             ){
-                Text("Clock out")
+                Text("Departure")
             }
         }
     }

@@ -135,7 +135,7 @@ class Timer {
 
     private fun formatDate(ms: Long): String{
         val local = LocalDateTime.ofInstant(Instant.ofEpochMilli(ms), ZoneId.of("Europe/Ljubljana"))
-        val formatter = DateTimeFormatter.ofPattern("hh:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
         return local.format(formatter)
 
     }
