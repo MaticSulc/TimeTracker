@@ -15,6 +15,7 @@ fun App() {
         val timer = remember { Timer() }
         TimerDisplay(
             formatted = timer.currentTime,
+            isClockedIn = timer.isClockedIn,
             onStartClick = timer::start,
             onEndClick = timer::pause
         )
