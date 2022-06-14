@@ -21,6 +21,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Calendar
 import kotlin.io.path.exists
 
 
@@ -37,7 +39,7 @@ class Timer {
     var isClockedIn by mutableStateOf(false)
 
     private var coroutineScope = CoroutineScope(Dispatchers.Main)
-    private var config: Config? = null
+    private lateinit var config: Config
     private var log: Clockins = Clockins()
 
     val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java,
@@ -98,6 +100,18 @@ class Timer {
                 if(data != null){ //can be empty too
                     log = gson.fromJson(data, Clockins::class.java)
                     isClockedIn = log.list.last().type
+
+                    val hoursSinceLastEntry = ChronoUnit.HOURS.between(log.list.last().time, LocalDateTime.now())
+
+                    if(log.list.last().type && config.autoleave.enabled && hoursSinceLastEntry > config.autoleave.treshold){ //auto clock out
+                        //check how many hours per day and auto calculate end time!
+                        val weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2 //1 is sunday
+                        val newDate = log.list.last().time.plusHours(config.schedule.requiredHours[weekDay].toLong())
+                        log.list.add(Entry(false, newDate))
+                        saveClockins()
+                        isClockedIn = false
+                    }
+
                 }
             }
         }
