@@ -4,7 +4,6 @@ import androidx.compose.runtime.setValue
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonPrimitive
@@ -19,7 +18,6 @@ import java.nio.file.Paths
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
@@ -37,10 +35,11 @@ class Timer {
 
     var currentTime by mutableStateOf("")
     var isClockedIn by mutableStateOf(false)
+    var lastEvent by mutableStateOf("")
 
     private var coroutineScope = CoroutineScope(Dispatchers.Main)
     private lateinit var config: Config
-    private var log: Clockins = Clockins()
+    var log: Clockins = Clockins()
 
     val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java,
         JsonDeserializer { json, type, jsonDeserializationContext ->
@@ -112,6 +111,8 @@ class Timer {
                         isClockedIn = false
                     }
 
+                    lastEvent = "${if(log.list.last().type) "Check in" else "Check out"} @ ${log.list.last().time.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))}"
+
                 }
             }
         }
@@ -125,6 +126,9 @@ class Timer {
             val json = gson.toJson(log)
             it.write(json) //overwrites, not appends!
         }
+
+        lastEvent = "${if(log.list.last().type) "Check in" else "Check out"} @ ${log.list.last().time.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))}"
+
     }
 
 

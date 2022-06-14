@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TimerDisplay(formatted: String, isClockedIn: Boolean, onStartClick: () -> Unit, onEndClick: () -> Unit, modifier: Modifier = Modifier){
+fun TimerDisplay(formatted: String, lastEvent: String, isClockedIn: Boolean, onStartClick: () -> Unit, onEndClick: () -> Unit, modifier: Modifier = Modifier){
 
     Column(
         modifier = modifier,
@@ -24,6 +24,22 @@ fun TimerDisplay(formatted: String, isClockedIn: Boolean, onStartClick: () -> Un
             fontSize = 30.sp,
             color = Color.Black
         )
+        if(lastEvent != ""){
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Latest event",
+                fontWeight = FontWeight.Medium,
+                fontSize = 15.sp,
+                color = Color.Black
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = lastEvent,
+                fontWeight = FontWeight.Light,
+                fontSize = 20.sp,
+                color = Color.Black
+            )
+        }
         Spacer(Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
