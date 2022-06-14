@@ -21,6 +21,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("org.apache.commons:commons-csv:1.9.0")
 }
 
 tasks.withType<KotlinCompile> {

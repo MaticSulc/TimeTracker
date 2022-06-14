@@ -19,6 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
+import java.io.FileWriter
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -29,7 +34,7 @@ fun HistoryView(showHistory: MutableState<Boolean>, log: Clockins, modifier: Mod
     AlertDialog(onDismissRequest = {showHistory.value = false},
     modifier = Modifier.height(400.dp).width(500.dp),
     confirmButton = {
-        Button(onClick = {exportCSV(showHistory)}) {
+        Button(onClick = {exportCSV(showHistory, log)}) {
             Text("Export as CSV")
         }
     },
@@ -51,8 +56,15 @@ fun HistoryView(showHistory: MutableState<Boolean>, log: Clockins, modifier: Mod
     })
 }
 
-private fun exportCSV(showHistory: MutableState<Boolean>){
+private fun exportCSV(showHistory: MutableState<Boolean>, log: Clockins){
+    val path = Paths.get("src\\main\\kotlin\\export.csv").toAbsolutePath()
 
+    val writer = Files.newBufferedWriter(path)
+    val csvPrinter = CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Type", "Timestamp"))
+    log.list.forEach {
+        csvPrinter.printRecord(it.type, it.time.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")))
+    }
+    csvPrinter.close(true)
     showHistory.value = false
 
 }
